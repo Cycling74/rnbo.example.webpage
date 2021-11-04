@@ -25,7 +25,8 @@ async function setup() {
     const device = await RNBO.createDevice({ context, patcher });
 
     // (Optional) Load the samples
-    await device.loadDependencies(dependencies);
+    if (device.loadDependencies)
+        await device.loadDependencies(dependencies);
 
     // Connect the device to the web audio graph
     device.node.connect(outputNode);

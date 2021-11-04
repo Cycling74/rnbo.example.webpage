@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Ignore the hacked rnbo.webaudio.js file that we include for testing
+js/rnbo.webaudio.js

@@ -3,6 +3,22 @@
   "maxversion": "8.2.1",
   "filename": "bloopy.maxpat",
   "name": "untitled",
-  "presets": [],
+  "presets": [
+    {
+      "name": "",
+      "preset": {
+        "__sps": {
+          "rnbo_obj-9": [
+            {},
+            {},
+            {},
+            {},
+            {},
+            {}
+          ]
+        }
+      }
+    }
+  ],
   "dependencies": []
 }
