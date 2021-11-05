@@ -14,7 +14,11 @@ Then, open up your terminal (Terminal.app on Mac, \<tbd> on Windows) and navigat
 
 ## Running the server
 
-Before you can run the server, you'll need to run `npm install`. This command checks the contents of `package.json` and `package-lock.json` to pull in dependencies specific to this project. In this case, we're pulling in a very small library called `http-server`. When you run `npm install`, you'll see this get downloaded to a folder called `node-modules`. You only need to do this once. Now, run the command
+Before you can run the server, you'll need to run the command 
+```
+npm install
+```
+This command checks the contents of `package.json` and `package-lock.json` to pull in dependencies specific to this project. In this case, we're pulling in a very small library called `http-server`. When you run `npm install`, you'll see this get downloaded to a folder called `node-modules`. You only need to do this once. Now, run the command
 
 ```
 npm run serve
