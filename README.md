@@ -1,6 +1,8 @@
 # RNBO Website Example
 
-This example shows you how to run a RNBO patch in the browser using a minimal setup.
+This example shows you how to add dynamic audio to a web page, using the JavaScript source code export feature of RNBO, part of [Max 8](https://cycling74.com/products/max) made by [Cycling '74](https://cycling74.com).
+
+This repository uses [Node](https://nodejs.org/en/) to launch a simple web server to make your web page available locally. For more on why this is necessary, see (Why a local server?)[##-Why-a-local-server?]
 
 ## Requirements
 
@@ -35,6 +37,8 @@ const response = await fetch("export/patch.export.json");
 ```
 
 can be changed to reflect the name of your export.
+
+## Why a local server?
 
 ## What's going on here?
 We're recreating on a very small scale what happens whenever you load a website on your computer. When you run `npm run serve`, a Node process starts. This process binds to a port on your machine, defaulting to port 8080. When your browser tries to access the website `http://localhost:8080`, it connects to the server and tries to get the content for the given path, which is `/`. Given this path, the server returns the contents of the file `index.html`, which is what you see when you load the page.
