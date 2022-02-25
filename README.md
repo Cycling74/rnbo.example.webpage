@@ -6,7 +6,7 @@ This repository uses [Node](https://nodejs.org/en/) to launch a simple web serve
 
 ## Prerequisites
 
-In order to run this example, you'll need `node`, `npm`, and access to the command line. Start by installing `node` if you don't already have it.
+In order to run this example, you'll need `node`, `npm`, and access to the command line. The `npm` binary ships with `node`, so just download and install that from their web site.
 
 ```
 https://nodejs.org/en/download/
@@ -24,23 +24,62 @@ Some notable files/directories:
 | js/                               | Source for the project, edit it however you like |
 | index.html                        | The web page itself |
 
-## Running the server
+## Using this Template
 
-Before you can run the server, you'll need to run the command 
+This Github repo is a template, which means you can use it to start your own git-based project using this repository as a starting point. The major difference between a template and a fork is that your new project won't include the commit history of this template--it will be an entirely new starting point. For more see [the official description](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+
+### Getting Started
+
+To get started, first create a new repository to hold your project using this repository as a template. If you're viewing this repo on Github, you should see a button at the top of the page that says `Use this template`. 
+
+![Use this template button](./img/use-this-template-button.png)
+
+You can also follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) on Github for creating a new repository from a template.
+
+Now you need to copy this repository locally. Follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to clone your repository. Once you've cloned your repository locally, you'll need to install your Node modules.
+
 ```
 npm install
 ```
-This command checks the contents of `package.json` and `package-lock.json` to pull in dependencies specific to this project. In this case, we're pulling in a very small library called `http-server`. When you run `npm install`, you'll see this get downloaded to a folder called `node-modules`. You only need to do this once. Now, run the command
+
+This command checks the contents of `package.json` and `package-lock.json` to pull in dependencies specific to this project. In this case, we're pulling in a very small library called `http-server`. When you run `npm install`, you'll see this get downloaded to a folder called `node-modules`. You only need to do this once.
+
+### Working with RNBO
+
+Next, open the RNBO patcher you'd like to work with, and navigate to the export sidebar. Find "JavaScript Export" target.
+
+![JavaScript source code export in the sidebar](./img/js-export-location.png)
+
+Export your project, making sure to export into the `export` folder in this directory. Your export directory should look something like this:
 
 ```
+export/
+├─ patch.export.json/
+├─ README.md
+```
+
+Whenever you make a change to your RNBO patch, remember to export the source code again to update this file. Now that you've exported your RNBO code, we're ready to open the webpage. From the repository root, run the following command:
+
+```sh
 npm run serve
 ```
 
-This will start an http server and should automatically open the default web browser. If everything went well, you should see and hear your RNBO patch.
+You may see something like the following in the console, but as soon as you do the server will try to open your web page in your default browser.
 
-## Exporting a new patch
+```sh
+Available on:
+  http://127.0.0.1:8081
+  http://192.168.88.139:8081
+Hit CTRL-C to stop the server
+Open: http://127.0.0.1:8081
+```
 
-This repository already contains a very simple patch `patches/bloopy.maxpat`, as well as an exported version of the same in `export/patch.export.json`. To use this example, simply delete these two files and export your patch into this `export` directory using the JSON Export target. If you change the name of your export to something other than `patch.export.json`, you'll need to change the JavaScript as well. In `js/app.js`, the line:
+If everything went well, you should see and hear your RNBO patch.
+
+
+### Exporting a new patch
+
+This example looks in the `export` directory for a patch named `patch.export.json`. If you change the name of your export to something other than `patch.export.json`, you'll need to change the JavaScript as well. In `js/app.js`, the line:
 
 ```js
 const response = await fetch("export/patch.export.json");
@@ -48,9 +87,21 @@ const response = await fetch("export/patch.export.json");
 
 can be changed to reflect the name of your export.
 
-## Why a local server?
+## Troubleshooting
 
-## What's going on here?
+### Why don't I see anything?
+
+First, check your developer console. On MacOS, you can bring this up in most browsers by pressing Command-Option-I on a Mac. Firefox puts developer tools under Tools > Browser Tools > Web Developer Tools. Other browsers may put this feature somewhere else, so check the documentation for your browser of choice. The important thing to do here is to make sure you don't see any error. If you see something in red, read the message carefully.
+
+### Something doesn't seem to be working right
+
+It might be that the version of RNBO that you used to export your patch doesn't match the version of the RNBO library that `index.html` is downloading. Look for a message in the developer console talking about mismatched versions. To fix this, either export a version of your patch using a more up-to-date version of RNBO, or else change the `script` tags in `index.html` to download a different version of the RNBO libraries.
+
+### My samples aren't loading correctly
+
+Again check the developer console, this time looking for error messages about a failure to decode audio data. Some browsers, like Chrome for example, don't support decoding `.aif` files. So if you're using `anton.aif` as a sample dependency, you should export again using `anton.wav`. Or maybe find another sample to use.
+
+## Why a local server?
 We're recreating on a very small scale what happens whenever you load a website on your computer. When you run `npm run serve`, a Node process starts. This process binds to a port on your machine, defaulting to port 8080. When your browser tries to access the website `http://localhost:8080`, it connects to the server and tries to get the content for the given path, which is `/`. Given this path, the server returns the contents of the file `index.html`, which is what you see when you load the page.
 
 As part of loading that page, your web browser also asks the server for the JavaScript file at `js/app.js`. When the browser executes this script, it makes yet another request to fetch the file at the path `export/patch.export.json`. Finally, the script can use this exported patch to create a RNBO JavaScript object and connect it to the audio graph in the current page.
@@ -58,3 +109,12 @@ As part of loading that page, your web browser also asks the server for the Java
 The important takeaway here is that this is the kind of interaction that your browser is expecting: making HTTP and HTTPS requests to fetch resources from a remote server. It's technically possible to simply double-click on the `index.html` file and to load the page using the `file:` protocol instead of `http:` or `https:`. However, for security reasons this will block access to WebAssembly or AudioWorklets, which will keep our exported RNBO patch from working the way we want. Running a local server lets the browser treat the web page as if it were pulled from the internet like any other page.
 
 The other reason that we run a server this way is because this brings us much closer to putting our RNBO patch on the publically accessible internet. In fact, running a local server like this will let you share this page to anyone on your local network, providing your computer's firewall isn't blocking connections to port 8080. If you want to build a public website containing a RNBO patch, it's helpful to keep this simple example in mind when you think about what resources to put where.
+
+## Customizing your web page
+
+From this point, the sky is the limit. You can do anything and everything to your web page, adding custom graphics and interaction in whatever way you like. A full discussion of web programming is beyond the scope of this README, but some useful reading material would include:
+
+- [ReactJS](https://reactjs.org/)
+- [p5JS](https://p5js.org/)
+- [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial)
+- [Netlify](https://www.netlify.com/)
