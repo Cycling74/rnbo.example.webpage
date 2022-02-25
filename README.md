@@ -2,9 +2,9 @@
 
 This example shows you how to add dynamic audio to a web page, using the JavaScript source code export feature of RNBO, part of [Max 8](https://cycling74.com/products/max) made by [Cycling '74](https://cycling74.com).
 
-This repository uses [Node](https://nodejs.org/en/) to launch a simple web server to make your web page available locally. For more on why this is necessary, see (Why a local server?)[##-Why-a-local-server?]
+This repository uses [Node](https://nodejs.org/en/) to launch a simple web server to make your web page available locally. For more on why this is necessary, see [Why a local server?](#why-a-local-server)
 
-## Requirements
+## Prerequisites
 
 In order to run this example, you'll need `node`, `npm`, and access to the command line. Start by installing `node` if you don't already have it.
 
@@ -12,7 +12,17 @@ In order to run this example, you'll need `node`, `npm`, and access to the comma
 https://nodejs.org/en/download/
 ```
 
-Then, open up your terminal (Terminal.app on Mac, \<tbd> on Windows) and navigate to this directory.
+## File structure
+
+The source code of the web application is in the `js/` directory. This directory contains the file `app.js`, which does all the work of loading and connecting your RNBO patch. There is also a file `guardrails.js`, which simply tries to provide some clear feedback if you're not running this example in the intended way.
+
+Some notable files/directories:
+
+| Location                          | Explanation   |
+| --------------------------------- | ------------- |
+| export/                           | The directory into which you should export your RNBO code |
+| js/                               | Source for the project, edit it however you like |
+| index.html                        | The web page itself |
 
 ## Running the server
 
