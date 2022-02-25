@@ -1,4 +1,4 @@
-# rnbo.example.static-server
+# RNBO Website Example
 
 This example shows you how to run a RNBO patch in the browser using a minimal setup.
 
