@@ -54,7 +54,7 @@ Export your project, making sure to export into the `export` folder in this dire
 
 ```
 export/
-├─ patch.export.json/
+├─ patch.export.json
 ├─ README.md
 ```
 
