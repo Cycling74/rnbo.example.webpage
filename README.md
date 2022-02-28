@@ -1,8 +1,8 @@
-# RNBO Website Example
+# RNBO Webpage Example
 
-This example shows you how to add dynamic audio to a web page, using the JavaScript source code export feature of RNBO, part of [Max 8](https://cycling74.com/products/max) made by [Cycling '74](https://cycling74.com).
+This example shows you how to add dynamic audio to a webpage, using the JavaScript source code export feature of RNBO, part of [Max 8](https://cycling74.com/products/max) made by [Cycling '74](https://cycling74.com).
 
-This repository uses [Node](https://nodejs.org/en/) to launch a simple web server to make your web page available locally. For more on why this is necessary, see [Why a local server?](#why-a-local-server)
+This repository uses [Node](https://nodejs.org/en/) to launch a simple web server to make your webpage available locally. For more on why this is necessary, see [Why a local server?](#why-a-local-server)
 
 ## Prerequisites
 
@@ -64,7 +64,7 @@ Whenever you make a change to your RNBO patch, remember to export the source cod
 npm run serve
 ```
 
-You may see something like the following in the console, but as soon as you do the server will try to open your web page in your default browser.
+You may see something like the following in the console, but as soon as you do the server will try to open your webpage in your default browser.
 
 ```sh
 Available on:
@@ -106,7 +106,7 @@ We're recreating on a very small scale what happens whenever you load a website 
 
 As part of loading that page, your web browser also asks the server for the JavaScript file at `js/app.js`. When the browser executes this script, it makes yet another request to fetch the file at the path `export/patch.export.json`. Finally, the script can use this exported patch to create a RNBO JavaScript object and connect it to the audio graph in the current page.
 
-The important takeaway here is that this is the kind of interaction that your browser is expecting: making HTTP and HTTPS requests to fetch resources from a remote server. It's technically possible to simply double-click on the `index.html` file and to load the page using the `file:` protocol instead of `http:` or `https:`. However, for security reasons this will block access to WebAssembly or AudioWorklets, which will keep our exported RNBO patch from working the way we want. Running a local server lets the browser treat the web page as if it were pulled from the internet like any other page.
+The important takeaway here is that this is the kind of interaction that your browser is expecting: making HTTP and HTTPS requests to fetch resources from a remote server. It's technically possible to simply double-click on the `index.html` file and to load the page using the `file:` protocol instead of `http:` or `https:`. However, for security reasons this will block access to WebAssembly or AudioWorklets, which will keep our exported RNBO patch from working the way we want. Running a local server lets the browser treat the webpage as if it were pulled from the internet like any other page.
 
 The other reason that we run a server this way is because this brings us much closer to putting our RNBO patch on the publically accessible internet. In fact, running a local server like this will let you share this page to anyone on your local network, providing your computer's firewall isn't blocking connections to port 8080. If you want to build a public website containing a RNBO patch, it's helpful to keep this simple example in mind when you think about what resources to put where.
 
