@@ -108,7 +108,7 @@ As part of loading that page, your web browser also asks the server for the Java
 
 The important takeaway here is that this is the kind of interaction that your browser is expecting: making HTTP and HTTPS requests to fetch resources from a remote server. It's technically possible to simply double-click on the `index.html` file and to load the page using the `file:` protocol instead of `http:` or `https:`. However, for security reasons this will block access to WebAssembly or AudioWorklets, which will keep our exported RNBO patch from working the way we want. Running a local server lets the browser treat the webpage as if it were pulled from the internet like any other page.
 
-The other reason that we run a server this way is because this brings us much closer to putting our RNBO patch on the publically accessible internet. In fact, running a local server like this will let you share this page to anyone on your local network, providing your computer's firewall isn't blocking connections to port 8080. If you want to build a public website containing a RNBO patch, it's helpful to keep this simple example in mind when you think about what resources to put where.
+The other reason that we run a server this way is because this brings us much closer to putting our RNBO patch on the publically accessible internet. If you want to build a public website containing a RNBO patch, it's helpful to keep this simple example in mind when you think about what resources to put where.
 
 ## Customizing your web page
 
