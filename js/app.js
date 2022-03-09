@@ -7,19 +7,20 @@ async function setup() {
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
 
-    let presets = [];
+    let presets;
     let dependencies = [];
     let devGui, deviceUI;
 
     // Fetch the exported patcher
     const response = await fetch("export/patch.export.json");
     const patcher = await response.json();
+    presets = patcher.presets || [];
 
-    // (Optional) Fetch the metadata
-    const metadataResponse = await fetch("export/rnbopackage.json");
-    const metadata = await metadataResponse.json();
-    presets = metadata.presets;
-    dependencies = metadata.dependencies;
+    // (Optional) Fetch the dependencies
+    try {
+        const dependenciesResponse = await fetch("export/media/dependencies.json");
+        dependencies = await dependenciesResponse.json();
+    } catch (e) {}
 
     // Create the device
     const device = await RNBO.createDevice({ context, patcher });
