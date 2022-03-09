@@ -18,7 +18,7 @@ async function setup() {
 
     // (Optional) Fetch the dependencies
     try {
-        const dependenciesResponse = await fetch("export/media/dependencies.json");
+        const dependenciesResponse = await fetch("export/dependencies.json");
         dependencies = await dependenciesResponse.json();
     } catch (e) {}
 
