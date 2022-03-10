@@ -101,6 +101,10 @@ It might be that the version of RNBO that you used to export your patch doesn't 
 
 Again check the developer console, this time looking for error messages about a failure to decode audio data. Some browsers, like Chrome for example, don't support decoding `.aif` files. So if you're using `anton.aif` as a sample dependency, you should export again using `anton.wav`. Or maybe find another sample to use.
 
+### Why isn't my patch changing in the browser?
+
+If you changed your exported patch in the `export` folder but your patch isn't changing in the browser, you might need to hard refresh the page (cmd+shift+R). This clears the cache to account for any changes to the page being served.
+
 ## Why a local server?
 We're recreating on a very small scale what happens whenever you load a website on your computer. When you run `npm run serve`, a Node process starts. This process binds to a port on your machine, defaulting to port 8080. When your browser tries to access the website `http://localhost:8080`, it connects to the server and tries to get the content for the given path, which is `/`. Given this path, the server returns the contents of the file `index.html`, which is what you see when you load the page.
 
