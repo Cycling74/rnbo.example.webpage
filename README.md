@@ -50,7 +50,7 @@ Next, open the RNBO patcher you'd like to work with, and navigate to the export 
 
 ![JavaScript source code export in the sidebar](./img/js-export-location.png)
 
-Export your project, making sure to export into the `export` folder in this directory. Your export directory should look something like this:
+Export your project, making sure to export into the `export` folder in your repository directory. Your export directory should look something like this:
 
 ```
 export/
