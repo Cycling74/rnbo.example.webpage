@@ -1,47 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="theme-color" content="#000000">
-	<meta name="rnbo-version" content="0.14.0-sjt-unified-deps">
-	<title>RNBO Web Export</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="rnbo-version" content="0.14.0-sjt-unified-deps">
+    <link rel="stylesheet" href="style/style.css">
+    <title>RNBO Web Export</title>
 
-	<style>
-		html, body {
-			margin: 0;
-			padding: 0;
-		}
-		#rnbo-root {
-			height: 100vh;
-			width: 100vw;
-		}
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        #rnbo-root {
+            height: 100vh;
+            width: 100vw;
+        }
         #background {
             position: absolute;
             z-index: -1;
         }
-	</style>
+    </style>
 </head>
 
 <body>
-	<noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
     <svg id="background" width="100%" height="100%"></svg>
-	<div id="rnbo-root"></div>
+    <div id="rnbo-root">
+        <div id="rnbo-clickable-keyboard">
+            <h2>MIDI Keyboard</h2>
+            <em id="no-midi-label">No MIDI input</em>
+        </div>
+        <div id="rnbo-inports">
+            <h2>Inports</h2>
+            <em id="no-inports-label">No inports available</em>
+            <form id="inport-form" className="inport">
+                <div className="inport-input">
+                    <select id="inport-select"></select>
+                    <input id="inport-text" type="text"></input>
+                    <input id="inport-submit" className="smallButton" type="submit" value="Send"/>
+                </div>
+            </form>
+        </div>
+        <div id="rnbo-parameter-sliders">
+            <h2>Parameters</h2>
+            <em id="no-param-label">No parameters</em>
+        </div>
+    </div>
 
-	<!-- Import RNBO Engine Wrapper -->
+    <!-- Import RNBO Engine Wrapper -->
     <!-- Make sure to include the RNBO engine version to the version of your exported code, found in rnbopackage.json -->
-	<script type="text/javascript" src="https://c74-public.nyc3.digitaloceanspaces.com/rnbo/0.15.0-dev.45/rnbo.min.js"></script>
-	
-	<!-- (Optional) Import RNBO UI -->
-    <!-- Creates a default UI for the loaded RNBO patcher -->
-	<script type="text/javascript" src="https://c74-public.nyc3.digitaloceanspaces.com/rnbo/0.15.0-dev.45/rnboui.min.js"></script>
-	
-	<!-- (Optional) Import RNBO DevTools -->
-    <!-- Creates a debug interface -->
-	<script type="text/javascript" src="https://c74-public.nyc3.digitaloceanspaces.com/rnbo/0.15.0-dev.45/rnbodev.min.js"></script>
+    <script type="text/javascript" src="vendor/rnbo.webaudio.js"></script>
 
     <!-- Load the script that creates the RNBO device  -->
-    <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="https://c74-public.nyc3.digitaloceanspaces.com/rnbo/0.15.0-dev.45/rnbo.min.js"></script>
 
     <!-- (Optional) The guardrails.js script isn't required for RNBO to work, and you can skip including it -->
     <!-- It simply offers some helpful error messages for common problems -->

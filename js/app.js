@@ -34,6 +34,12 @@ async function setup() {
     // (Optional) Automatically create sliders for the device parameters
     makeSliders(device);
 
+    // (Optional) Create a form to send messages to RNBO inputs
+    makeInportForm(device);
+
+    // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
+    attachOutports(device);
+
     // (Optional) Connect MIDI inputs
     makeMIDIKeyboard(device);
 
@@ -134,6 +140,49 @@ function makeSliders(device) {
         // Add the slider element
         pdiv.appendChild(sliderContainer);
     });
+}
+
+function makeInportForm(device) {
+    const messages = device.messages;
+    const idiv = document.getElementById("rnbo-inports");
+    const inportSelect = document.getElementById("inport-select");
+    const inportText = document.getElementById("inport-text");
+    const inportForm = document.getElementById("inport-form");
+    const inports = messages.filter(message => message.type === RNBO.MessagePortType.Inport);
+    let inportTag = null;
+
+    if (inports.length === 0) {
+        idiv.removeChild(document.getElementById("inport-form"));
+        return;
+    } else {
+        idiv.removeChild(document.getElementById("no-inports-label"));
+        inports.forEach(inport => {
+            const option = document.createElement("option");
+            option.innerText = inport.tag;
+            inportSelect.appendChild(option);
+        });
+        inportSelect.onchange = () => inportTag = inportSelect.value;
+        inportTag = inportSelect.value;
+
+        inportForm.onsubmit = (ev) => {
+            // Do this or else the page will reload
+            ev.preventDefault();
+
+            // Turn the text into a list of numbers (RNBO messages must be numbers, not text)
+            const values = inportText.value.split(/\s+/).map(s => parseFloat(s));
+            
+            // Send the message event to the RNBO device
+            let messageEvent = new RNBO.MessageEvent(RNBO.TimeNow, inportTag, values);
+            device.scheduleEvent(messageEvent);
+        }
+    }
+}
+
+function attachOutports(device) {
+    device.messageEvent.subscribe((ev) => {
+        // Message events have a tag as well as a payload
+        console.log(`${ev.tag}: ${ev.payload}`);
+	});
 }
 
 function makeMIDIKeyboard(device) {

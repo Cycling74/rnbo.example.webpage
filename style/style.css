@@ -36,6 +36,6 @@ h2, em {
     display: flex;
 }
 
-#rnbo-parameter-sliders > div > input {
+#rnbo-parameter-sliders > div > input:first-of-type {
     flex-grow: 1;
 }
