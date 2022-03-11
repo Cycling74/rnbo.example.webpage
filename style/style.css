@@ -1,0 +1,14 @@
+#rnbo-parameter-sliders {
+    margin: auto;
+    max-width: 540px;
+    display: flex;
+    flex-direction: column;
+}
+
+#rnbo-parameter-sliders > div {
+    display: flex;
+}
+
+#rnbo-parameter-sliders > div > input {
+    flex-grow: 1;
+}
