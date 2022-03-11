@@ -6,11 +6,9 @@ This repository uses [Node](https://nodejs.org/en/) to launch a simple web serve
 
 ## Prerequisites
 
-In order to run this example, you'll need `node`, `npm`, and access to the command line. The `npm` binary ships with `node`, so just download and install that from their web site.
+In order to run this example, you'll need `node`, `npm`, and access to the command line. The `npx` binary ships with `node`, so just download and install that from the [Node.js downloads site](https://nodejs.org/en/download/). The recommended version is their latest `LTS`, which at the time of writing this document is version 16.
 
-```
-https://nodejs.org/en/download/
-```
+If have heard about `node` and `npm` before but would like to know more about the included `npx` Package Runner please refer to the [Node.js Documentation](https://nodejs.dev/learn/the-npx-nodejs-package-runner).
 
 ## File structure
 
@@ -36,13 +34,7 @@ To get started, first create a new repository to hold your project using this re
 
 You can also follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) on Github for creating a new repository from a template.
 
-Now you need to copy this repository locally. Follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to clone your repository. Once you've cloned your repository locally, you'll need to install your Node modules.
-
-```
-npm install
-```
-
-This command checks the contents of `package.json` and `package-lock.json` to pull in dependencies specific to this project. In this case, we're pulling in a very small library called `http-server`. When you run `npm install`, you'll see this get downloaded to a folder called `node-modules`. You only need to do this once.
+Now you need to copy this repository locally. Follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to clone your repository.
 
 ### Working with RNBO
 
@@ -58,24 +50,22 @@ export/
 ├─ README.md
 ```
 
-Whenever you make a change to your RNBO patch, remember to export the source code again to update this file. Now that you've exported your RNBO code, we're ready to open the webpage. From the repository root, run the following command:
+Whenever you make a change to your RNBO patch, remember to export the source code again to update this file. Now that you've exported your RNBO code, we're ready to open the webpage. From the repository root, run the following command to start the local web server
 
 ```sh
-npm run serve
+npx http-server
 ```
 
-You may see something like the following in the console, but as soon as you do the server will try to open your webpage in your default browser.
+When asked to install the `http-server` in order to proceed simply agree by using `y`. You will only have to agree on that once.
+Once the server started up successfully you may see something like the following in the console:
 
 ```sh
 Available on:
-  http://127.0.0.1:8081
-  http://192.168.88.139:8081
+  http://127.0.0.1:8080
+  http://192.168.88.139:8080
 Hit CTRL-C to stop the server
-Open: http://127.0.0.1:8081
 ```
-
-If everything went well, you should see and hear your RNBO patch.
-
+Open the shown URL, fe. `http://127.0.0.1:8080` in your default browser, if everything went well, you should see and hear your RNBO patch.
 
 ### Exporting a new patch
 
@@ -106,11 +96,11 @@ Again check the developer console, this time looking for error messages about a 
 If you changed your exported patch in the `export` folder but your patch isn't changing in the browser, you might need to hard refresh the page (cmd+shift+R). This clears the cache to account for any changes to the page being served.
 
 ## Why a local server?
-We're recreating on a very small scale what happens whenever you load a website on your computer. When you run `npm run serve`, a Node process starts. This process binds to a port on your machine, defaulting to port 8080. When your browser tries to access the website `http://localhost:8080`, it connects to the server and tries to get the content for the given path, which is `/`. Given this path, the server returns the contents of the file `index.html`, which is what you see when you load the page.
+We're recreating on a very small scale what happens whenever you load a website on your computer. When you run `npx http-server`, a Node process starts. This process binds to a port on your machine, defaulting to port 8080. When your browser tries to access the website `http://localhost:8080`, it connects to the server and tries to get the content for the given path, which is `/`. Given this path, the server returns the contents of the file `index.html`, which is what you see when you load the page.
 
 As part of loading that page, your web browser also asks the server for the JavaScript file at `js/app.js`. When the browser executes this script, it makes yet another request to fetch the file at the path `export/patch.export.json`. Finally, the script can use this exported patch to create a RNBO JavaScript object and connect it to the audio graph in the current page.
 
-The important takeaway here is that this is the kind of interaction that your browser is expecting: making HTTP and HTTPS requests to fetch resources from a remote server. It's technically possible to simply double-click on the `index.html` file and to load the page using the `file:` protocol instead of `http:` or `https:`. However, for security reasons this will block access to WebAssembly or AudioWorklets, which will keep our exported RNBO patch from working the way we want. Running a local server lets the browser treat the webpage as if it were pulled from the internet like any other page.
+The important takeaway here is that this is the kind of interaction that your browser is expecting: making HTTP and HTTPS requests to fetch resources from a remote server. It's technically possible to simply double-click on the `index.html` file and to load the page using the `file:` protocol instead of `http:` or `https:`. However, for security reasons this will block access to `WebAssembly` or `AudioWorklets`, which will keep our exported RNBO patch from working the way we want. Running a local server lets the browser treat the webpage as if it were pulled from the internet like any other page.
 
 The other reason that we run a server this way is because this brings us much closer to putting our RNBO patch on the publically accessible internet. If you want to build a public website containing a RNBO patch, it's helpful to keep this simple example in mind when you think about what resources to put where.
 
