@@ -6,16 +6,13 @@ async function setup() {
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
-
-    let presets;
-    let dependencies = [];
-
+    
     // Fetch the exported patcher
     const response = await fetch("export/patch.export.json");
     const patcher = await response.json();
-    presets = patcher.presets || [];
-
+    
     // (Optional) Fetch the dependencies
+    let dependencies = [];
     try {
         const dependenciesResponse = await fetch("export/dependencies.json");
         dependencies = await dependenciesResponse.json();
@@ -33,7 +30,7 @@ async function setup() {
 
     // (Optional) Extract the name of the patcher from the description
     if (patcher.desc.meta && patcher.desc.meta.filename)
-        document.getElementById("patcher-title").innerText = patcher.desc.meta?.filename;
+        document.getElementById("patcher-title").innerText = patcher.desc.meta.filename;
 
     // (Optional) Automatically create sliders for the device parameters
     makeSliders(device);
@@ -43,6 +40,9 @@ async function setup() {
 
     // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
     attachOutports(device);
+
+    // (Optional) Load presets, if any
+    loadPresets(device, patcher);
 
     // (Optional) Connect MIDI inputs
     makeMIDIKeyboard(device);
@@ -56,15 +56,16 @@ function makeSliders(device) {
     let pdiv = document.getElementById("rnbo-parameter-sliders");
     if (device.numParameters > 0) pdiv.removeChild(document.getElementById("no-param-label"));
 
+    // This will allow us to ignore parameter update events while dragging the slider.
+    let isDraggingSlider = false;
+    let uiElements = {};
+
     device.parameters.forEach(param => {
         // Subpatchers also have params. If we want to expose top-level
         // params only, the best way to determine if a parameter is top level
         // or not is to exclude parameters with a '/' in them.
         // You can comment out this line if you also want to include subpatcher params
         if (param.id.includes("/")) return;
-
-        // This will allow us to ignore parameter update events while dragging the slider.
-        let isDraggingSlider = false;
 
         // Create a label, an input slider and a value display
         let label = document.createElement("label");
@@ -93,11 +94,6 @@ function makeSliders(device) {
         } else {
             slider.setAttribute("step", (param.max - param.min) / 1000.0);
         }
-
-        // We can't actually get the value of the parameter
-        // like this, because the value might not have loaded
-        // by the time the device is ready. See the next example
-        // for how to attach a parameter listener.
         slider.setAttribute("value", param.value);
 
         // Make a settable text input display for the value
@@ -133,27 +129,32 @@ function makeSliders(device) {
             }
         });
 
-        // Listen to parameter change events and update the slider & text input
-        param.changeEvent.subscribe((ev) => {
-            if (!isDraggingSlider) {
-                slider.value = ev;
-            }
-            text.value = ev;
-        });
+        // Store the slider and text by name so we can access them later
+        uiElements[param.name] = { slider, text };
 
         // Add the slider element
         pdiv.appendChild(sliderContainer);
     });
+
+    // Listen to parameter changes from the device
+    device.parameterChangeEvent.subscribe(param => {
+        if (!isDraggingSlider)
+            uiElements[param.name].slider.value = param.value;
+        uiElements[param.name].text.value = param.value.toFixed(1);
+    });
 }
 
 function makeInportForm(device) {
-    const messages = device.messages;
     const idiv = document.getElementById("rnbo-inports");
     const inportSelect = document.getElementById("inport-select");
     const inportText = document.getElementById("inport-text");
     const inportForm = document.getElementById("inport-form");
-    const inports = messages.filter(message => message.type === RNBO.MessagePortType.Inport);
     let inportTag = null;
+    
+    // Device messages correspond to inlets/outlets or inports/outports
+    // You can filter for one or the other using the "type" of the message
+    const messages = device.messages;
+    const inports = messages.filter(message => message.type === RNBO.MessagePortType.Inport);
 
     if (inports.length === 0) {
         idiv.removeChild(document.getElementById("inport-form"));
@@ -183,10 +184,38 @@ function makeInportForm(device) {
 }
 
 function attachOutports(device) {
+    const outports = device.messages.filter(message => message.type === RNBO.MessagePortType.Outport);
+    if (outports.length < 1) {
+        document.getElementById("rnbo-console").removeChild(document.getElementById("rnbo-console-div"));
+        return;
+    }
+
+    document.getElementById("rnbo-console").removeChild(document.getElementById("no-outports-label"));
     device.messageEvent.subscribe((ev) => {
+
         // Message events have a tag as well as a payload
         console.log(`${ev.tag}: ${ev.payload}`);
+
+        document.getElementById("rnbo-console-readout").innerText = `${ev.tag}: ${ev.payload}`;
     });
+}
+
+function loadPresets(device, patcher) {
+    let presets = patcher.presets || [];
+    if (presets.length < 1) {
+        document.getElementById("rnbo-presets").removeChild(document.getElementById("preset-select"));
+        return;
+    }
+
+    document.getElementById("rnbo-presets").removeChild(document.getElementById("no-presets-label"));
+    let presetSelect = document.getElementById("preset-select");
+    presets.forEach((preset, index) => {
+        const option = document.createElement("option");
+        option.innerText = preset.name;
+        option.value = index;
+        presetSelect.appendChild(option);
+    });
+    presetSelect.onchange = () => device.setPreset(presets[presetSelect.value]);
 }
 
 function makeMIDIKeyboard(device) {
