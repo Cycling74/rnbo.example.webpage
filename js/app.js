@@ -54,7 +54,8 @@ async function setup() {
 
 function makeSliders(device) {
     let pdiv = document.getElementById("rnbo-parameter-sliders");
-    if (device.numParameters > 0) pdiv.removeChild(document.getElementById("no-param-label"));
+    let noParamLabel = document.getElementById("no-param-label");
+    if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
 
     // This will allow us to ignore parameter update events while dragging the slider.
     let isDraggingSlider = false;
