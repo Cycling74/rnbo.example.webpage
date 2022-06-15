@@ -254,7 +254,7 @@ function makeMIDIKeyboard(device) {
             let midiPort = 0;
             let noteDurationMs = 250;
         
-            // When scheduling an even to occur in the future, use the current audio context time
+            // When scheduling an event to occur in the future, use the current audio context time
             // multiplied by 1000 (converting seconds to milliseconds) for now.
             let noteOnEvent = new RNBO.MIDIEvent(device.context.currentTime, midiPort, noteOnMessage);
             let noteOffEvent = new RNBO.MIDIEvent(device.context.currentTime * 1000 + noteDurationMs, midiPort, noteOffMessage);
