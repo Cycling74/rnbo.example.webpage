@@ -65,8 +65,9 @@ function makeSliders(device) {
         // Subpatchers also have params. If we want to expose top-level
         // params only, the best way to determine if a parameter is top level
         // or not is to exclude parameters with a '/' in them.
-        // You can comment out this line if you also want to include subpatcher params
-        if (param.id.includes("/")) return;
+        // You can uncomment the following line if you don't want to include subpatcher params
+        
+        //if (param.id.includes("/")) return;
 
         // Create a label, an input slider and a value display
         let label = document.createElement("label");
