@@ -18,7 +18,7 @@ async function setup() {
         dependencies = await dependenciesResponse.json();
 
         // Prepend "export" to any file dependenciies
-        dependencies = dependencies.map(d => !!d.url ? d : "export/" + d.file);
+        dependencies.forEach(d => { if (!!d.file) d.file = "export/" + d.file });
     } catch (e) {}
 
     // Create the device
