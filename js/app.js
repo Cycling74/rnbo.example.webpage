@@ -71,9 +71,8 @@ async function setup() {
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
 
-    // (Optional) Extract the name of the patcher from the description
-    if (patcher.desc.meta && patcher.desc.meta.filename)
-        document.getElementById("patcher-title").innerText = patcher.desc.meta.filename;
+    // (Optional) Extract the name and rnbo version of the patcher from the description
+    document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.rnboVersion + ")";
 
     // (Optional) Automatically create sliders for the device parameters
     makeSliders(device);
