@@ -8,8 +8,21 @@ async function setup() {
     outputNode.connect(context.destination);
     
     // Fetch the exported patcher
-    const response = await fetch("export/patch.export.json");
-    const patcher = await response.json();
+    let patcher;
+    try {
+        const response = await fetch("export/patch.export.json");
+        patcher = await response.json();
+    
+        if (!window.RNBO) {
+            // Load RNBO script dynamically
+            // Note that you can skip this by knowing the RNBO version of your patch
+            // beforehand and just include it using a <script> tag
+            await loadRNBOScript(patcher.desc.rnboVersion);
+        }
+    } catch (err) {
+        showLoadingError(err);
+        return;
+    }
     
     // (Optional) Fetch the dependencies
     let dependencies = [];
@@ -53,6 +66,29 @@ async function setup() {
     document.body.onclick = () => {
         context.resume();
     }
+}
+
+function loadRNBOScript(version) {
+    return new Promise((resolve, reject) => {
+        if (/^\d+\.\d+\.\d+-dev$/.test(version)) {
+            throw new Error("Patcher exported with a Debug Version!\nPlease specify the correct RNBO version to use in the code.");
+        }
+        const el = document.createElement("script");
+        el.src = "https://c74-public.nyc3.digitaloceanspaces.com/rnbo/" + encodeURIComponent(version) + "/rnbo.min.js";
+        el.onload = resolve;
+        el.onerror = function(err) {
+            console.log(err);
+            reject(new Error("Failed to load rnbo.js v" + version));
+        };
+        document.body.append(el);
+    });
+}
+
+function showLoadingError(err) {
+    const el = document.createElement("div");
+    el.id = "patcher-load-error";
+    el.innerText = err.message;
+    document.getElementById("patcher-title").parentElement.append(el);
 }
 
 function makeSliders(device) {

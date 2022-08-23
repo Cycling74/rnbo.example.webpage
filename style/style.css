@@ -20,6 +20,12 @@ h2, em {
     max-width: 540px;
 }
 
+#patcher-load-error {
+    background: #EA5050;
+    color: white;
+    padding: 15px;
+}
+
 #rnbo-clickable-keyboard {
     display: flex;
     flex-wrap: wrap;
