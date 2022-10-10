@@ -220,7 +220,7 @@ function loadPresets(device, patcher) {
         option.value = index;
         presetSelect.appendChild(option);
     });
-    presetSelect.onchange = () => device.setPreset(presets[presetSelect.value]);
+    presetSelect.onchange = () => device.setPreset(presets[presetSelect.value].preset);
 }
 
 function makeMIDIKeyboard(device) {
