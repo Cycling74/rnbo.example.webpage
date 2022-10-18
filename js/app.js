@@ -1,4 +1,6 @@
-async function setup() {
+async function setup(setupContext) {
+    const patchExportURL = "export/patch.export.json";
+
     // Create AudioContext
     const WAContext = window.AudioContext || window.webkitAudioContext;
     const context = new WAContext();
@@ -8,7 +10,14 @@ async function setup() {
     outputNode.connect(context.destination);
     
     // Fetch the exported patcher
-    const response = await fetch("export/patch.export.json");
+    const response = await fetch(patchExportURL);
+
+    // Completely skippable steps if you're not using guardrails.js
+    if (typeof setupContext !== "undefined") {
+        setupContext.patchFetchResponse = response;
+        setupContext.patchExportURL = patchExportURL;
+    }
+
     const patcher = await response.json();
     
     // (Optional) Fetch the dependencies
@@ -274,4 +283,17 @@ function makeMIDIKeyboard(device) {
     });
 }
 
-setup();
+const runSetup = async () => {
+    // Not necessary, but we make this available to guardrails.js so it can
+    // double-check that something isn't misconfigured
+    let setupContext = {};
+
+    try {
+        await setup(setupContext);
+    } catch (e) {
+        setupContext.error = e;
+        if (typeof runGuardrailsChecks === "function")
+            runGuardrailsChecks(setupContext);
+    }
+};
+runSetup();
