@@ -1,5 +1,5 @@
-async function setup(setupContext) {
-    const patchExportURL = "export/patch.export.json";
+async function setup() {
+    const patchExportURL = "export/simple-synth.export.json";
 
     // Create AudioContext
     const WAContext = window.AudioContext || window.webkitAudioContext;
@@ -10,15 +10,36 @@ async function setup(setupContext) {
     outputNode.connect(context.destination);
     
     // Fetch the exported patcher
-    const response = await fetch(patchExportURL);
+    let response, patcher;
+    try {
+        response = await fetch(patchExportURL);
+        patcher = await response.json();
+    
+        if (!window.RNBO) {
+            // Load RNBO script dynamically
+            // Note that you can skip this by knowing the RNBO version of your patch
+            // beforehand and just include it using a <script> tag
+            await loadRNBOScript(patcher.desc.rnboVersion);
+        }
 
-    // Completely skippable steps if you're not using guardrails.js
-    if (typeof setupContext !== "undefined") {
-        setupContext.patchFetchResponse = response;
-        setupContext.patchExportURL = patchExportURL;
+    } catch (err) {
+        const errorContext = {
+            error: err
+        };
+        if (response && (response.status >= 300 || response.status < 200)) {
+            errorContext.header = `Couldn't load patcher export bundle`,
+            errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
+            ` trying to load "${patchExportURL}". If that doesn't` + 
+            ` match the name of the file you exported from RNBO, modify` + 
+            ` patchExportURL in app.js.`;
+        }
+        if (typeof guardrails === "function") {
+            guardrails(errorContext);
+        } else {
+            throw err;
+        }
+        return;
     }
-
-    const patcher = await response.json();
     
     // (Optional) Fetch the dependencies
     let dependencies = [];
@@ -31,7 +52,17 @@ async function setup(setupContext) {
     } catch (e) {}
 
     // Create the device
-    const device = await RNBO.createDevice({ context, patcher });
+    let device;
+    try {
+        device = await RNBO.createDevice({ context, patcher });
+    } catch (err) {
+        if (typeof guardrails === "function") {
+            guardrails({ error: err });
+        } else {
+            throw err;
+        }
+        return;
+    }
 
     // (Optional) Load the samples
     if (dependencies.length)
@@ -62,6 +93,26 @@ async function setup(setupContext) {
     document.body.onclick = () => {
         context.resume();
     }
+
+    // Skip if you're not using guardrails.js
+    if (typeof guardrails === "function")
+        guardrails(errorContext);
+}
+
+function loadRNBOScript(version) {
+    return new Promise((resolve, reject) => {
+        if (/^\d+\.\d+\.\d+-dev$/.test(version)) {
+            throw new Error("Patcher exported with a Debug Version!\nPlease specify the correct RNBO version to use in the code.");
+        }
+        const el = document.createElement("script");
+        el.src = "https://c74-public.nyc3.digitaloceanspaces.com/rnbo/" + encodeURIComponent(version) + "/rnbo.min.js";
+        el.onload = resolve;
+        el.onerror = function(err) {
+            console.log(err);
+            reject(new Error("Failed to load rnbo.js v" + version));
+        };
+        document.body.append(el);
+    });
 }
 
 function makeSliders(device) {
@@ -283,17 +334,4 @@ function makeMIDIKeyboard(device) {
     });
 }
 
-const runSetup = async () => {
-    // Not necessary, but we make this available to guardrails.js so it can
-    // double-check that something isn't misconfigured
-    let setupContext = {};
-
-    try {
-        await setup(setupContext);
-    } catch (e) {
-        setupContext.error = e;
-        if (typeof runGuardrailsChecks === "function")
-            runGuardrailsChecks(setupContext);
-    }
-};
-runSetup();
+setup();

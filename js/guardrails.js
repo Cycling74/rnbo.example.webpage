@@ -4,6 +4,8 @@
  * you can if you want to.
  */
 
+const guardrailsErrors = [];
+
 const displayObtrusiveErrors = (errors) => {
     if (errors.length <= 0) return;
 
@@ -31,7 +33,9 @@ const displayObtrusiveErrors = (errors) => {
             width: 100%;
             padding: 25px;
             margin-bottom: 8px;
-            background-color: white;`
+            background-color: white;
+            background: #EA5050;
+            color: white;`
         );
         const h1 = document.createElement('h1');
         h1.appendChild(document.createTextNode(header));
@@ -72,7 +76,7 @@ const displayObtrusiveErrors = (errors) => {
         <rect x="0" y="0" width="100%" height="100%" fill="url(#polka-dots)"></rect>`;
 };
 
-const checkIfLocationIsFileURL = (setupContext, errors) => {
+const checkIfLocationIsFileURL = (errors) => {
     if (window.location.protocol === 'file:') {
         errors.push({
             header: 'file:// access not supported',
@@ -84,45 +88,15 @@ const checkIfLocationIsFileURL = (setupContext, errors) => {
     }
 };
 
-const checkIfRNBOIsDefined = (setupContext, errors) => {
-    if (typeof RNBO === "undefined") {
-        errors.push({
-            header: `RNBO CDN did not load`,
-            description: `Check index.html to make sure that it's looking for the RNBO` +
-            ` JavaScript file from the correct CDN link.`
-        });
-    }
-};
-
-const checkIfPatcherLoads = (setupContext, errors) => {
-    if (typeof setupContext !== "undefined" && typeof setupContext.patchFetchResponse !== "undefined") {
-        if (setupContext.patchFetchResponse.status >= 300) {
-            errors.push({
-                header: `Couldn't load patcher export bundle`,
-                description: `Check app.js to see what file it's trying to load. Currently it's` +
-                ` trying to load "${setupContext.patchExportURL}". If that doesn't` + 
-                ` match the name of the file you exported from RNBO, modify` + 
-                ` patchExportURL in app.js.`
-            });
-        }
-    }
-}
-
-const checkBroadErrors = (setupContext, errors) => {
-    if (typeof setupContext !== "undefined" && typeof setupContext.error !== "undefined") {
-        errors.push({
+const guardrails = (errorContext) => {
+    if (errorContext) {
+        const finalErrorContext = Object.assign({
             header: `Error during setup`,
-            description: `${setupContext.error}`
-        });
+            description: `${errorContext.error}`
+        }, errorContext);
+        guardrailsErrors.push(finalErrorContext);
     }
-};
 
-const runGuardrailsChecks = (setupContext) => {
-    const errors = [];
-    checkIfLocationIsFileURL(setupContext, errors);
-    checkIfRNBOIsDefined(setupContext, errors);
-    checkIfPatcherLoads(setupContext, errors);
-    checkBroadErrors(setupContext, errors);
-
-    displayObtrusiveErrors(errors);
+    checkIfLocationIsFileURL(guardrailsErrors);
+    displayObtrusiveErrors(guardrailsErrors);
 }
