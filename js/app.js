@@ -1,5 +1,5 @@
 async function setup() {
-    const patchExportURL = "export/simple-synth.export.json";
+    const patchExportURL = "export/feedback-synth.export.json";
 
     // Create AudioContext
     const WAContext = window.AudioContext || window.webkitAudioContext;
@@ -19,7 +19,7 @@ async function setup() {
             // Load RNBO script dynamically
             // Note that you can skip this by knowing the RNBO version of your patch
             // beforehand and just include it using a <script> tag
-            await loadRNBOScript(patcher.desc.rnboVersion);
+            await loadRNBOScript(patcher.desc.meta.rnboversion);
         }
 
     } catch (err) {
@@ -95,7 +95,7 @@ async function setup() {
 
     // Skip if you're not using guardrails.js
     if (typeof guardrails === "function")
-        guardrails(errorContext);
+        guardrails();
 }
 
 function loadRNBOScript(version) {
