@@ -248,7 +248,7 @@ function makeInportForm(device) {
 }
 
 function attachOutports(device) {
-    const outports = device.outports;
+    const outports = device.messages.filter(message => message.type === RNBO.MessagePortType.Outport);
     if (outports.length < 1) {
         document.getElementById("rnbo-console").removeChild(document.getElementById("rnbo-console-div"));
         return;
@@ -256,9 +256,6 @@ function attachOutports(device) {
 
     document.getElementById("rnbo-console").removeChild(document.getElementById("no-outports-label"));
     device.messageEvent.subscribe((ev) => {
-
-        // Ignore message events that don't belong to an outport
-        if (outports.findIndex(elt => elt.tag === ev.tag) < 0) return;
 
         // Message events have a tag as well as a payload
         console.log(`${ev.tag}: ${ev.payload}`);
