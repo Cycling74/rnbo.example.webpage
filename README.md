@@ -72,7 +72,7 @@ Open the shown URL, fe. `http://127.0.0.1:8080` in your default browser, if ever
 This example looks in the `export` directory for a patch named `patch.export.json`. If you change the name of your export to something other than `patch.export.json`, you'll need to change the JavaScript as well. In `js/app.js`, the line:
 
 ```js
-const response = await fetch("export/patch.export.json");
+const patchExportURL = "export/patch.export.json";
 ```
 
 can be changed to reflect the name of your export.
