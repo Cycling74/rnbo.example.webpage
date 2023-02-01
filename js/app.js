@@ -194,7 +194,7 @@ function makeSliders(device) {
         });
 
         // Store the slider and text by name so we can access them later
-        uiElements[param.name] = { slider, text };
+        uiElements[param.id] = { slider, text };
 
         // Add the slider element
         pdiv.appendChild(sliderContainer);
@@ -203,8 +203,8 @@ function makeSliders(device) {
     // Listen to parameter changes from the device
     device.parameterChangeEvent.subscribe(param => {
         if (!isDraggingSlider)
-            uiElements[param.name].slider.value = param.value;
-        uiElements[param.name].text.value = param.value.toFixed(1);
+            uiElements[param.id].slider.value = param.value;
+        uiElements[param.id].text.value = param.value.toFixed(1);
     });
 }
 
