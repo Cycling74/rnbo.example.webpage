@@ -1,6 +1,6 @@
 # RNBO Webpage Example
 
-This example shows you how to add dynamic audio to a webpage, using the JavaScript source code export feature of RNBO, part of [Max 8](https://cycling74.com/products/max) made by [Cycling '74](https://cycling74.com).
+This example shows you how to add dynamic audio to a webpage, using the web export feature of RNBO, part of [Max 8](https://cycling74.com/products/max) made by [Cycling '74](https://cycling74.com).
 
 This repository uses [Node](https://nodejs.org/en/) to launch a simple web server to make your webpage available locally. For more on why this is necessary, see [Why a local server?](#why-a-local-server)
 
@@ -38,9 +38,9 @@ Now you need to copy this repository locally. Follow [the official steps](https:
 
 ### Working with RNBO
 
-Next, open the RNBO patcher you'd like to work with, and navigate to the export sidebar. Find "JavaScript Export" target.
+Next, open the RNBO patcher you'd like to work with, and navigate to the export sidebar. Find the "Web Export" target.
 
-![JavaScript source code export in the sidebar](./img/js-export-location.png)
+![Web export in the sidebar](./img/js-export-location.png)
 
 Export your project, making sure to export into the `export` folder in your repository directory. Your export directory should look something like this:
 
